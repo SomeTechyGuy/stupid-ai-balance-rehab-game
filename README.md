@@ -3,6 +3,13 @@ An AI generated (stupid) game that uses the Wii balance board for controlling a 
 
 ![](gameplay.jpg)
 
+Download:
+---------
+
+```git clone https://github.com/SomeTechyGuy/stupid-ai-balance-rehab-game.git```
+
+```cd stupid-ai-balance-rehab-game```
+
 Config:
 -------
 
