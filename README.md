@@ -147,6 +147,6 @@ gcc -o game game.c $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_ttf -lSDL2
 - Nintendo for the Wii Balance Board hardware
 - The xwiimote project for Linux Wii device support
 - SDL2 development team
-- AI assistance in development (Idk any coding language so I used AI)
+- AI generated code (Idk any coding language so I used AI)
 
 **Note**: This game requires actual Nintendo Wii Balance Board hardware and is designed for Linux systems. Performance optimization scripts are included for Raspberry Pi 4B users.
