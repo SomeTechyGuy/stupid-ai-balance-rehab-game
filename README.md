@@ -29,4 +29,5 @@ Files:
 Compiling:
 ----------
 
-To compile the game, run ```gcc -o game game.c $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lxwiimote -lbluetooth -lm```
+To compile the game, run ```sudo apt update
+sudo apt install -y build-essential git cmake pkg-config libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev libsdl2-image-dev libxwiimote-dev libbluetooth-dev pulseaudio pulseaudio-utils``` for Debian/Ubuntu, ```sudo dnf install -y gcc make cmake pkgconfig SDL2-devel SDL2_ttf-devel SDL2_mixer-devel SDL2_image-devel xwiimote-devel bluez-libs-devel pulseaudio-utils``` for Fedora/CentOS/RHEL, or ```sudo pacman -S gcc make cmake pkgconfig sdl2 sdl2_ttf sdl2_mixer sdl2_image xwiimote bluez-utils pulseaudio mesa``` for Arch, then run ```gcc -o game game.c $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lxwiimote -lbluetooth -lm```
