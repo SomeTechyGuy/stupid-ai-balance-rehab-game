@@ -37,16 +37,24 @@ Compiling:
 ----------
 
 # SDL2 libraries
+```bash
 sudo apt install -y libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev libsdl2-image-dev
+```
 
 # Wii Balance Board support
+```bash
 sudo apt install -y libxwiimote-dev libbluetooth-dev
+```
 
 # Audio system
+```bash
 sudo apt install -y pulseaudio pulseaudio-utils
+```
 
 # Graphics drivers (for Pi 4B)
+```bash
 sudo apt install -y mesa-utils libgl1-mesa-dev
+```
 
 ## Installation
 
