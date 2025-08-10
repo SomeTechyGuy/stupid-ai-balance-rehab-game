@@ -48,19 +48,6 @@ sudo apt install -y pulseaudio pulseaudio-utils
 # Graphics drivers (for Pi 4B)
 sudo apt install -y mesa-utils libgl1-mesa-dev
 
-# Optional: Development tools
-```sudo apt install -y gdb valgrind```
-Fedora/CentOS/RHEL:
-```bash
-sudo dnf install -y gcc make cmake pkgconfig SDL2-devel SDL2_ttf-devel SDL2_mixer-devel SDL2_image-devel xwiimote-devel bluez-libs-devel pulseaudio-utils mesa-libGL-devel
-```
-
-
-Arch Linux:
-```bash
-sudo pacman -S gcc make cmake pkgconfig sdl2 sdl2_ttf sdl2_mixer sdl2_image xwiimote bluez-utils pulseaudio mesa
-```
-
 ## Installation
 
 To compile the game, run:
