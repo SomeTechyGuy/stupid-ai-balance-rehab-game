@@ -23,4 +23,10 @@ Audio:
 
 Files:
 ------
+
 ### Make sure you have in the same directory a file called "shingom.otf" for the font Shin Go Medium
+
+Compiling:
+----------
+
+To compile the game, run ```gcc -o game game.c $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lxwiimote -lbluetooth -lm```
