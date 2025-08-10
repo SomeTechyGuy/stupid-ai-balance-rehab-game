@@ -20,3 +20,7 @@ Audio:
 ### For audio, please add the following files in the same directory as the game: main\_intro.wav, transition.wav, connection\_main.wav, connection\_intro.wav, and main\_loop.wav
 
 ### Note: The files that start with "main" are used on the main game screen (NOT the connection screen). The files that start with "connection" are used on the connection screen. The file with the word "transition" is used during the transition between the connection and "main game" screens.
+
+Files:
+------
+### Make sure you have in the same directory a file called "shingom.otf" for the font Shin Go Medium
