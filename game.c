@@ -140,9 +140,9 @@ typedef struct {
 } PlayerProfile;
 
 PlayerProfile available_players[] = {
-    {"Player 1", "example1.jpg"}, 
-    {"Player 2", "example2.jpg"},
-    {"Player 3", "example3.jpg"}
+    {"Player 1", "player1.jpg"},
+    {"Player 2", "player2.jpg"},
+    {"Player 3", "player3.jpg"}
 };
 int num_players = sizeof(available_players) / sizeof(available_players[0]);
 
@@ -1026,9 +1026,12 @@ int main(int argc, char* argv[]) {
 
                 if (menu_select_timer >= MENU_SELECT_TIME_REQUIRED) {
                     selected_player_index = player_selection_choice - 1;
-                    // Load profile-specific save data
+                    // Reset and load profile-specific save data
                     lowest_time_to_win = read_lowest_time(get_profile_filename("score.txt", selected_player_index));
                     total_wins = read_total_wins(get_profile_filename("wins.txt", selected_player_index));
+                    dodge_high_score = 0; // Reset dodge score until game is selected
+                    printf("Loaded profile for %s: best_time=%.2f, total_wins=%d\n", 
+                           available_players[selected_player_index].name, lowest_time_to_win, total_wins);
                     state = MAIN_MENU;
                     menu_select_timer = 0.0f;
                     Mix_PlayChannel(-1, select_sound, 0);
@@ -1301,6 +1304,11 @@ int main(int argc, char* argv[]) {
                     }
                     
                     reset_game_state();
+                    // Reset profile-specific data when returning to player selection
+                    lowest_time_to_win = -1.0f;
+                    total_wins = 0;
+                    dodge_high_score = 0;
+                    selected_player_index = -1;
                     state = PLAYER_SELECTION;
                     init_player(&player);
                 }
@@ -1438,7 +1446,7 @@ int main(int argc, char* argv[]) {
                         
                         // Draw the instruction text below, also centered
                         TTF_SizeText(font_menu_description, diff_instructions[i], &text_width, &text_height);
-                        x_pos = diff_positions[i] - (text_w / 2);
+                        x_pos = diff_positions[i] - (text_width / 2);
                         draw_text(renderer, font_menu_description, diff_instructions[i], x_pos, diff_base_y + 80, (SDL_Color){FONT_COLOR_R, FONT_COLOR_G, FONT_COLOR_B, 255});
                     }
                     break;
