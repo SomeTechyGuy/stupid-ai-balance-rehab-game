@@ -27,19 +27,19 @@
 #include <SDL2/SDL_image.h> // Required for PNG images
 
 // --- Game Configuration ---
-#define WINDOW_WIDTH 1920 // Change this to the correct size for your display
-#define WINDOW_HEIGHT 1080 // Change this to the correct size for your display too
-#define GAME_OBJECT_SIZE 150   // Player image, coin, and balance hold target size
-#define COB_SCALE_GENERAL 0.00015    // Sensitivity for coin collector and balance hold
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
+#define GAME_OBJECT_SIZE 150   // INCREASED SIZE for better visibility on a large TV.
+#define COB_SCALE_GENERAL 0.00015    // Original working value for general modes
 #define COB_SCALE_DODGE 0.00025 // Increased sensitivity for Dodge mode
-#define DEAD_ZONE 400.0
-#define TRAIL_LENGTH 60
+#define DEAD_ZONE 400.0      // Original working value
+#define TRAIL_LENGTH 60       // Longer trail for smoother curves (Increased from 20)
 #define WIN_ANIMATION_DURATION 2500 // In milliseconds
 #define FPS 60
 #define POLL_TIMEOUT_MS 100  // Poll more frequently
 #define MAX_EVENTS_PER_POLL 10  // Process multiple events per poll
 #define POLL_TIMEOUT_THRESHOLD 100  // Much more forgiving timeout
-#define TARGET_FPS 60 // Change this to the FPS of your display
+#define TARGET_FPS 60
 #define FRAME_TIME (1000.0f / TARGET_FPS)
 
 // --- Debug & Performance ---
@@ -140,7 +140,7 @@ typedef struct {
 } PlayerProfile;
 
 PlayerProfile available_players[] = {
-    {"Player 1", "example1.jpg"},
+    {"Player 1", "example1.jpg"}, 
     {"Player 2", "example2.jpg"},
     {"Player 3", "example3.jpg"}
 };
@@ -367,6 +367,24 @@ int init_xwiimote_non_blocking() {
 }
 
 // --- File I/O Functions ---
+// Helper function to generate profile-specific filename
+char* get_profile_filename(const char* base_filename, int player_index) {
+    static char filename[256];
+    const char* player_name = available_players[player_index].name;
+    // Convert player name to lowercase for filename
+    char lowercase_name[64];
+    int i = 0;
+    while (player_name[i] && i < 63) {
+        lowercase_name[i] = (player_name[i] >= 'A' && player_name[i] <= 'Z') ? 
+                           player_name[i] + 32 : player_name[i];
+        i++;
+    }
+    lowercase_name[i] = '\0';
+    
+    snprintf(filename, sizeof(filename), "%s_%s", lowercase_name, base_filename);
+    return filename;
+}
+
 float read_lowest_time(const char* filename) {
     FILE* file = fopen(filename, "r");
     float score = -1.0f;
@@ -894,8 +912,9 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Failed to load font 'shingom.otf'! TTF_Error: %s\n", TTF_GetError());
     }
 
-    lowest_time_to_win = read_lowest_time("score.txt");
-    total_wins = read_total_wins("wins.txt"); // NEW: Load total wins
+    // Initialize with default player (will be updated when player is selected)
+    lowest_time_to_win = -1.0f;
+    total_wins = 0;
     last_frame_time = SDL_GetTicks();
     last_input_time = SDL_GetTicks();
     connection_start_time = SDL_GetTicks();
@@ -1007,6 +1026,9 @@ int main(int argc, char* argv[]) {
 
                 if (menu_select_timer >= MENU_SELECT_TIME_REQUIRED) {
                     selected_player_index = player_selection_choice - 1;
+                    // Load profile-specific save data
+                    lowest_time_to_win = read_lowest_time(get_profile_filename("score.txt", selected_player_index));
+                    total_wins = read_total_wins(get_profile_filename("wins.txt", selected_player_index));
                     state = MAIN_MENU;
                     menu_select_timer = 0.0f;
                     Mix_PlayChannel(-1, select_sound, 0);
@@ -1038,7 +1060,7 @@ int main(int argc, char* argv[]) {
                 if (menu_select_timer >= MENU_SELECT_TIME_REQUIRED) {
                     if (selected_game == DODGE) {
                         state = GAME_DODGE;
-                        dodge_high_score = read_dodge_high_score(DODGE_SCORE_FILE);
+                        dodge_high_score = read_dodge_high_score(get_profile_filename("dodge_score.txt", selected_player_index));
                         init_dodge_game(&player);
                     } else {
                         state = DIFFICULTY_SELECTION;
@@ -1203,10 +1225,10 @@ int main(int argc, char* argv[]) {
                     float win_time = (float)(win_message_start_time - game_start_time) / 1000.0f;
                     if (lowest_time_to_win == -1.0f || win_time < lowest_time_to_win) {
                         lowest_time_to_win = win_time;
-                        write_lowest_time("score.txt", lowest_time_to_win);
+                        write_lowest_time(get_profile_filename("score.txt", selected_player_index), lowest_time_to_win);
                     }
                     total_wins++; // NEW: Increment total wins
-                    write_total_wins("wins.txt", total_wins); // NEW: Save total wins
+                    write_total_wins(get_profile_filename("wins.txt", selected_player_index), total_wins); // NEW: Save total wins
                     init_confetti(player.x, player.y);
                 }
                 break;
@@ -1232,7 +1254,7 @@ int main(int argc, char* argv[]) {
                             dodge_score++;
                             if (dodge_score > dodge_high_score) {
                                 dodge_high_score = dodge_score;
-                                write_dodge_high_score(DODGE_SCORE_FILE, dodge_high_score);
+                                write_dodge_high_score(get_profile_filename("dodge_score.txt", selected_player_index), dodge_high_score);
                             }
                         }
                         SDL_Rect block_rect = {
